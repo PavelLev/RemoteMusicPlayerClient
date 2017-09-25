@@ -9,14 +9,15 @@ namespace RemoteMusicPlayerClient
 {
     public class Junk
     {
+        private static readonly string _filePath = "D:\\Offtop\\Music\\Mr. Robot OST\\Mac Quayle - Mr. Robot, Vol. 1 (2016)\\08. 1.0_8-whatsyourask.m4p.flac";
+
         public static async void DoShit()
         {
             var httpClient = new HttpClient();
 
-            var filePath = "D:\\Offtop\\Music\\Mr. Robot OST\\Mac Quayle - Mr. Robot, Vol. 1 (2016)\\08. 1.0_8-whatsyourask.m4p.flac";
             
             var query = HttpUtility.ParseQueryString("");
-            query["filePath"] = filePath;
+            query["filePath"] = _filePath;
             var url = $"http://localhost:5000/filesystem/GetTokenForFile?{query}";
 
 
@@ -26,7 +27,7 @@ namespace RemoteMusicPlayerClient
 
             if (!httpResponseMessage.IsSuccessStatusCode)
             {
-                throw new Exception("Huynya zapros " + token);
+                throw new Exception("Plohoy zapros " + token);
             }
 
 
@@ -39,7 +40,7 @@ namespace RemoteMusicPlayerClient
 
             networkStream.WriteAsync(token);
 
-            MusicPlayer.Instance.Initialize(FileTypeHelper.Instance.GetFileType(filePath), networkStream);
+            MusicPlayer.Instance.Initialize(FileTypeHelper.Instance.GetFileType(_filePath), networkStream);
 
             MusicPlayer.Instance.Play();
         }
