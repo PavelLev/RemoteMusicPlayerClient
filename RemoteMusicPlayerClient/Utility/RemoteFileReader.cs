@@ -1,32 +1,40 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
 using System.IO;
+using System.Linq;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using RemoteMusicPlayerClient.Utility.Segments;
 
 namespace RemoteMusicPlayerClient.Utility
 {
-    public class RemoteFileReaderClient: Stream
+    public class RemoteFileReader: Stream
     {
         private const int MemStreamMaxLength = Int32.MaxValue;
-        private int _position = 0;
+        private int _position;
         private readonly int _length;
         private bool _isOpen = true;
         private readonly byte[] _buffer;
         private readonly SegmentCollection _localSegments;
         private readonly NetworkStream _networkStream;
 
-        public RemoteFileReaderClient(int length, NetworkStream networkStream)
+        private readonly JsonTextWriter _jsonTextWriter;
+
+        public RemoteFileReader(int length, NetworkStream networkStream)
         {
             _length = length;
-            _networkStream = networkStream;
-            _buffer = new byte[length];
+
             _localSegments = new SegmentCollection(length);
+
+            _buffer = new byte[length];
+
+            _networkStream = networkStream;
+            _jsonTextWriter = new JsonTextWriter(new StreamWriter(networkStream));
         }
 
-        public static async Task<RemoteFileReaderClient> ByToken(string token)
+        public static async Task<RemoteFileReader> ByToken(string token)
         {
             var tcpClient = new TcpClient();
 
@@ -44,7 +52,7 @@ namespace RemoteMusicPlayerClient.Utility
             }
             var length = BitConverter.ToInt32(intBuffer, 0);
 
-            return new RemoteFileReaderClient(length, networkStream);
+            return new RemoteFileReader(length, networkStream);
         }
         
 
@@ -55,7 +63,7 @@ namespace RemoteMusicPlayerClient.Utility
 
         public override long Seek(long offset, SeekOrigin origin)
         {
-            EnsureStreamIsOpen();
+            ThrowIfStreamIsClosed();
 
             EnsureValueIsCorrect(offset);
 
@@ -85,7 +93,9 @@ namespace RemoteMusicPlayerClient.Utility
                     break;
                 }
                 default:
+                {
                     throw new ArgumentException("Argument_InvalidSeekOrigin");
+                }
             }
 
             Contract.Assert(_position >= 0, "_position >= 0");
@@ -115,7 +125,7 @@ namespace RemoteMusicPlayerClient.Utility
             {
                 throw new ArgumentException("Argument_InvalidOffLen");
             }
-            EnsureStreamIsOpen();
+            ThrowIfStreamIsClosed();
 
 
             var numberOfBytesToRead = _length - _position;
@@ -127,14 +137,17 @@ namespace RemoteMusicPlayerClient.Utility
             {
                 return 0;
             }
-
-            // TODO Network interaction goes here
+            
             var absentSegments = _localSegments.Add(new Segment(_position, _position + numberOfBytesToRead - 1));
 
-            foreach (var absentSegment in absentSegments)
+            var readTasks = absentSegments.Select(absentSegment =>
             {
-                _networkStream
-            }
+                Serialization.Serializer.Serialize(_jsonTextWriter, absentSegment);
+                _jsonTextWriter.Flush();
+
+                return _networkStream.ReadAsync(_buffer, absentSegment.Begin, absentSegment.Count);
+            }).ToArray();
+            Task.WaitAll(readTasks);
 
             Array.Copy(_buffer, _position, buffer, offset, numberOfBytesToRead);
             _position += numberOfBytesToRead;
@@ -162,7 +175,7 @@ namespace RemoteMusicPlayerClient.Utility
         {
             get
             {
-                EnsureStreamIsOpen();
+                ThrowIfStreamIsClosed();
                 return _length;
             }
         }
@@ -171,12 +184,12 @@ namespace RemoteMusicPlayerClient.Utility
         {
             get
             {
-                EnsureStreamIsOpen();
+                ThrowIfStreamIsClosed();
                 return _position;
             }
             set
             {
-                EnsureStreamIsOpen();
+                ThrowIfStreamIsClosed();
 
                 EnsureValueIsCorrect(value);
 
@@ -184,7 +197,7 @@ namespace RemoteMusicPlayerClient.Utility
             }
         }
 
-        private void EnsureStreamIsOpen()
+        private void ThrowIfStreamIsClosed()
         {
             if (!_isOpen)
             {

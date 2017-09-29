@@ -46,7 +46,7 @@ namespace RemoteMusicPlayerClient.Services
             _soundOut.Pause();
         }
 
-        public float Volume { get; set; } = 0.01f;
+        public float Volume { get; set; } = 0.02f;
 
         public long Length => _soundOut.WaveSource.Length;
 

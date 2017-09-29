@@ -1,15 +1,22 @@
-﻿namespace RemoteMusicPlayerClient.Utility.Segments
-{
-    public class Segment
-    {
-        public int Begin { get; set; }
-        public int End { get; set; }
-        public int Count => End - Begin + 1;
+﻿using Newtonsoft.Json;
 
+namespace RemoteMusicPlayerClient.Utility.Segments
+{
+    [JsonObject(MemberSerialization.OptIn)]
+    public struct Segment
+    {
+        [JsonProperty]
+        public int Begin { get; }
+        [JsonProperty]
+        public int End { get; }
+        public int Count { get; } 
+
+        [JsonConstructor]
         public Segment(int begin, int end)
         {
             Begin = begin;
             End = end;
+            Count = End - Begin + 1;
         }
 
         public bool Contains(Segment value)

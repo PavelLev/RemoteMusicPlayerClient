@@ -30,6 +30,10 @@ namespace RemoteMusicPlayerClient.Utility.Segments
             {
                 var absentSegmentToShrinkIndex =
                     absentSegments.FindIndex(absentSegment => absentSegment.Contains(removedSegment));
+                if (absentSegmentToShrinkIndex == -1)
+                {
+                    return absentSegments;
+                }
 
                 var absentSegmentToShrink = absentSegments[absentSegmentToShrinkIndex];
 
@@ -39,16 +43,16 @@ namespace RemoteMusicPlayerClient.Utility.Segments
                 }
                 else if (absentSegmentToShrink.Begin == removedSegment.Begin)
                 {
-                    absentSegmentToShrink.Begin = removedSegment.End + 1;
+                    absentSegments[absentSegmentToShrinkIndex] = new Segment(removedSegment.End + 1, absentSegmentToShrink.End);
                 }
                 else if (absentSegmentToShrink.End == removedSegment.End)
                 {
-                    absentSegmentToShrink.End = removedSegment.Begin - 1;
+                    absentSegments[absentSegmentToShrinkIndex] = new Segment(absentSegmentToShrink.Begin, removedSegment.Begin - 1);
                 }
                 else
                 {
                     var newAbsentSegment = new Segment(removedSegment.End + 1, absentSegmentToShrink.End);
-                    absentSegmentToShrink.End = removedSegment.Begin - 1;
+                    absentSegments[absentSegmentToShrinkIndex] = new Segment(absentSegmentToShrink.Begin, removedSegment.Begin - 1);
 
                     absentSegments.Insert(absentSegmentToShrinkIndex + 1, newAbsentSegment);
                 }
@@ -63,11 +67,11 @@ namespace RemoteMusicPlayerClient.Utility.Segments
             
             _segments.Sort((x, y) =>
             {
-                var result = y.Begin - x.Begin;
+                var result = x.Begin - y.Begin;
 
                 if (result == 0)
                 {
-                    result = y.End - x.End;
+                    result = x.End - y.End;
                 }
 
                 return result;
@@ -79,8 +83,13 @@ namespace RemoteMusicPlayerClient.Utility.Segments
                 while (_segments[i].End >= _segments[i + 1].Begin)
                 {
                     removedSegments.Add(new Segment(_segments[i + 1].Begin, _segments[i].End));
-                    _segments[i].End = _segments[i + 1].End;
+                    _segments[i] = new Segment(_segments[i].Begin, _segments[i + 1].End);
                     _segments.RemoveAt(i + 1);
+
+                    if (i == _segments.Count - 1)
+                    {
+                        break;
+                    }
                 }
             }
 

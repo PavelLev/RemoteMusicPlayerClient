@@ -32,15 +32,9 @@ namespace RemoteMusicPlayerClient
 
 
 
-            var tcpClient = new TcpClient();
+            var remoteFileReader = await RemoteFileReader.ByToken(token);
 
-            await tcpClient.ConnectAsync("localhost", 54364);
-
-            var networkStream = tcpClient.GetStream();
-
-            networkStream.WriteAsync(token);
-
-            MusicPlayer.Instance.Initialize(FileTypeHelper.Instance.GetFileType(_filePath), networkStream);
+            MusicPlayer.Instance.Initialize(FileTypeHelper.Instance.GetFileType(_filePath), remoteFileReader);
 
             MusicPlayer.Instance.Play();
         }
