@@ -15,7 +15,8 @@ namespace RemoteMusicPlayerClient
     {
         private void App_OnStartup(object sender, StartupEventArgs e)
         {
-            Junk.DoShit();
+            Junk.DoMoreShit();
+            
         }
     }
 }

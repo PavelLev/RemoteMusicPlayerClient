@@ -124,5 +124,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RemoteFileDialog\RemoteFileDialog.csproj">
+      <Project>{3fc3b652-2561-42eb-b680-843cc5407016}</Project>
+      <Name>RemoteFileDialog</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

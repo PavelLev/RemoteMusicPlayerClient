@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Sockets;
 using System.Web;
+using RemoteFileDialog.Utility;
 using RemoteMusicPlayerClient.Services;
 using RemoteMusicPlayerClient.Utility;
 
@@ -37,6 +39,11 @@ namespace RemoteMusicPlayerClient
             MusicPlayer.Instance.Initialize(FileTypeHelper.Instance.GetFileType(_filePath), remoteFileReader);
 
             MusicPlayer.Instance.Play();
+        }
+
+        public static void DoMoreShit()
+        {
+            var viewModel = DesignerObjects.DeisgnerRemoteFileDialogViewModel;
         }
     }
 }

@@ -3,7 +3,7 @@ using Prism.Mvvm;
 
 namespace RemoteFileDialog.Entries
 {
-    public class Entry : BindableBase, IEntry
+    public class Entry : BindableBase
     {
         private string _path;
 
@@ -29,9 +29,9 @@ namespace RemoteFileDialog.Entries
             set => SetProperty(ref _isDirectory, value);
         }
 
-        private IList<IEntry> _childEntries;
+        private IList<Entry> _childEntries;
 
-        public IList<IEntry> ChildEntries
+        public IList<Entry> ChildEntries
         {
             get => _childEntries;
             set => SetProperty(ref _childEntries, value);

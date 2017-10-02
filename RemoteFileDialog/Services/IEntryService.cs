@@ -1,10 +1,14 @@
-﻿using RemoteFileDialog.Entries;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using RemoteFileDialog.Entries;
 
 namespace RemoteFileDialog.Services
 {
     public interface IEntryService
     {
-        void LoadChildEntries(IEntry entry);
-        void LoadChildEntriesRecursively(IEntry entry);
+        Task<IEnumerable<Entry>> LoadChildEntriesAsync(string path, bool recursive = false);
+        IEnumerable<Entry> LoadRootEntries();
+        bool EntryExists(string path);
     }
 }
