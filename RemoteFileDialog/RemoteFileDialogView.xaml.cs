@@ -1,13 +1,14 @@
 ﻿using DryIoc;
+using RemoteFileDialog.Utility;
 
 namespace RemoteFileDialog
 {
     public partial class RemoteFileDialogView
     {
-        public RemoteFileDialogView(IContainer container)
+        public RemoteFileDialogView()
         {
             InitializeComponent();
-            DataContext = container.Resolve<IRemoteFileDialogViewModel>();
+            DataContext = Ioc.Container.Resolve<IRemoteFileDialogViewModel>();
         }
     }
 }

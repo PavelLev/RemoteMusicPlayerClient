@@ -7,6 +7,7 @@
     xmlns:entries="clr-namespace:RemoteFileDialog.Entries"
     xmlns:utility="clr-namespace:RemoteFileDialog.Utility"
     xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+    xmlns:validators="clr-namespace:RemoteFileDialog.Utility.Validators"
     mc:Ignorable="d" 
     ResizeMode="NoResize"
     d:DesignHeight="400" d:DesignWidth="350"
@@ -62,14 +63,14 @@
                 </HierarchicalDataTemplate>
             </TreeView.Resources>
         </TreeView>
-        
+
         <TextBox 
             Grid.Row="1"
         >
             <TextBox.Text>
                 <Binding Path="EntryToCheckPath">
                     <Binding.ValidationRules>
-                        <Binding></Binding>
+                        <utility:ValidationRuleWrapper ValidationRule="{utility:IocResolver ServiceType={x:Type validators:EntryExistsValidationRule}}"></utility:ValidationRuleWrapper>
                     </Binding.ValidationRules>
                 </Binding>
             </TextBox.Text>
