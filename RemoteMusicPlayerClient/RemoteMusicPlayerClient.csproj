@@ -16,6 +16,9 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>
+  <PropertyGroup>
+    <TargetPlatformVersion>8.0</TargetPlatformVersion>
+  </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
@@ -67,6 +70,8 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="Windows.Data" />
+    <Reference Include="Windows.UI" />
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -76,17 +81,66 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="DryIoc\AsyncExecutionFlowScopeContext.cs" />
+    <Compile Include="DryIoc\Container.cs" />
+    <Compile Include="DryIoc\FastExpressionCompiler.cs" />
+    <Compile Include="DryIoc\ImTools.cs" />
+    <Compile Include="IRemoteMusicPlayerViewModel.cs" />
     <Compile Include="Junk.cs" />
-    <Compile Include="Services\MusicPlayer.cs" />
+    <Compile Include="Music\IPlayOrderService.cs" />
+    <Compile Include="Music\Playlisting\IPlaylistCollectionViewModel.cs" />
+    <Compile Include="Music\Playlisting\PlaylistCollectionViewModel.cs" />
+    <Compile Include="Music\Playlisting\PlaylistFileDownloadStateService.cs" />
+    <Compile Include="Music\Playlisting\PlaylistFileSelectedEventArgs.cs" />
+    <Compile Include="Music\PlayOrderService.cs" />
+    <Compile Include="Networking\IOnlineStatusService.cs" />
+    <Compile Include="Music\Playlisting\IPlaylistFileDownloadStateService.cs" />
+    <Compile Include="Networking\IRemoteFileReaderFactory.cs" />
+    <Compile Include="Networking\OnlineStatus.cs" />
+    <Compile Include="Networking\OnlineStatusService.cs" />
+    <Compile Include="Utility\ApplicationNameService.cs" />
+    <Compile Include="Utility\Extensions\DependencyObjectExtension.cs" />
+    <Compile Include="Utility\Extensions\Enumerable.cs" />
+    <Compile Include="Utility\FileNameExtractor.cs" />
+    <Compile Include="Utility\IApplicationNameService.cs" />
+    <Compile Include="Utility\IFileNameExtractor.cs" />
+    <Compile Include="Music\Metadata.cs" />
+    <Compile Include="Music\Playlisting\PlaylistViewModel.cs" />
+    <Compile Include="Music\Playlisting\PlaylistDirectoryViewModel.cs" />
+    <Compile Include="Music\Playlisting\PlaylistFileViewModel.cs" />
+    <Compile Include="Music\Playlisting\PlaylistView.xaml.cs">
+      <DependentUpon>PlaylistView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Networking\RemoteFileReaderFactory.cs" />
+    <Compile Include="RemoteMusicPlayerViewModel.cs" />
+    <Compile Include="Music\IMusicPlayerService.cs" />
+    <Compile Include="Music\MusicPlayerService.cs" />
+    <Compile Include="Music\Playlisting\IPlaylistService.cs" />
+    <Compile Include="Music\Playlisting\PlaylistService.cs" />
+    <Compile Include="Utility\IFileTypeHelper.cs" />
+    <Compile Include="Utility\Ioc.cs" />
+    <Compile Include="Utility\IToastService.cs" />
     <Compile Include="Utility\Logger.cs" />
     <Compile Include="Utility\Segments\Segment.cs" />
     <Compile Include="Utility\Segments\SegmentCollection.cs" />
-    <Compile Include="Utility\Extensions\NetworkStreamExtensions.cs" />
+    <Compile Include="Utility\Extensions\NetworkStreamExtension.cs" />
     <Compile Include="Utility\FileTypeHelper.cs" />
     <Compile Include="Utility\FileType.cs" />
-    <Compile Include="Utility\RemoteFileReader.cs" />
-    <Compile Include="Utility\Serialization.cs" />
-    <Page Include="MainWindow.xaml">
+    <Compile Include="Networking\RemoteFileReader.cs" />
+    <Compile Include="Utility\ToastService.cs" />
+    <Page Include="Music\Playlisting\PlaylistFileDataTemplate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Music\Playlisting\PlaylistFileStyles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Music\Playlisting\PlaylistView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="RemoteMusicPlayerView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -94,8 +148,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
+    <Compile Include="RemoteMusicPlayerView.xaml.cs">
+      <DependentUpon>RemoteMusicPlayerView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
@@ -127,10 +181,15 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CheckCircle\CheckCircle.csproj">
+      <Project>{662C85F3-8192-420A-AB6E-7239761A353D}</Project>
+      <Name>CheckCircle</Name>
+    </ProjectReference>
     <ProjectReference Include="..\RemoteFileDialog\RemoteFileDialog.csproj">
       <Project>{3fc3b652-2561-42eb-b680-843cc5407016}</Project>
       <Name>RemoteFileDialog</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

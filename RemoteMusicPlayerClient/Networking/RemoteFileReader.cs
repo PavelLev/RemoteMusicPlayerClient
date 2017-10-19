@@ -6,23 +6,26 @@ using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using RemoteMusicPlayerClient.Utility;
 using RemoteMusicPlayerClient.Utility.Segments;
 
-namespace RemoteMusicPlayerClient.Utility
+namespace RemoteMusicPlayerClient.Networking
 {
     public class RemoteFileReader: Stream
     {
-        private const int MemStreamMaxLength = Int32.MaxValue;
+        private const int MemStreamMaxLength = int.MaxValue;
         private int _position;
         private readonly int _length;
         private bool _isOpen = true;
         private readonly byte[] _buffer;
         private readonly SegmentCollection _localSegments;
         private readonly NetworkStream _networkStream;
+        private readonly JsonSerializer _jsonSerializer;
+        private readonly IOnlineStatusService _onlineStatusService;
 
         private readonly JsonTextWriter _jsonTextWriter;
 
-        public RemoteFileReader(int length, NetworkStream networkStream)
+        public RemoteFileReader(int length, NetworkStream networkStream, JsonSerializer jsonSerializer, IOnlineStatusService onlineStatusService)
         {
             _length = length;
 
@@ -31,28 +34,9 @@ namespace RemoteMusicPlayerClient.Utility
             _buffer = new byte[length];
 
             _networkStream = networkStream;
+            _jsonSerializer = jsonSerializer;
+            _onlineStatusService = onlineStatusService;
             _jsonTextWriter = new JsonTextWriter(new StreamWriter(networkStream));
-        }
-
-        public static async Task<RemoteFileReader> ByToken(string token)
-        {
-            var tcpClient = new TcpClient();
-
-            await tcpClient.ConnectAsync("localhost", 54364);
-
-            var networkStream = tcpClient.GetStream();
-
-            networkStream.WriteAsync(token);
-
-            var intBuffer = new byte[4];
-            var result = await networkStream.ReadAsync(intBuffer, 0, 4);
-            if (result != 4)
-            {
-                throw new NetworkInformationException();
-            }
-            var length = BitConverter.ToInt32(intBuffer, 0);
-
-            return new RemoteFileReader(length, networkStream);
         }
         
 
@@ -107,6 +91,8 @@ namespace RemoteMusicPlayerClient.Utility
             throw new NotSupportedException();
         }
 
+        public int Number { get; set; } = 0;
+
         public override int Read(byte[] buffer, int offset, int count)
         {
             if (buffer == null)
@@ -127,7 +113,6 @@ namespace RemoteMusicPlayerClient.Utility
             }
             ThrowIfStreamIsClosed();
 
-
             var numberOfBytesToRead = _length - _position;
             if (numberOfBytesToRead > count)
             {
@@ -140,14 +125,27 @@ namespace RemoteMusicPlayerClient.Utility
             
             var absentSegments = _localSegments.Add(new Segment(_position, _position + numberOfBytesToRead - 1));
 
-            var readTasks = absentSegments.Select(absentSegment =>
+            try
             {
-                Serialization.Serializer.Serialize(_jsonTextWriter, absentSegment);
-                _jsonTextWriter.Flush();
+                var readTasks = absentSegments.Select(absentSegment =>
+                {
+                    _jsonSerializer.Serialize(_jsonTextWriter, absentSegment);
+                    _jsonTextWriter.Flush();
 
-                return _networkStream.ReadAsync(_buffer, absentSegment.Begin, absentSegment.Count);
-            }).ToArray();
-            Task.WaitAll(readTasks);
+                    return _networkStream.ReadAsync(_buffer, absentSegment.Begin, absentSegment.Count);
+                }).ToArray();
+                Task.WaitAll(readTasks);
+                _onlineStatusService.BecomeOnline();
+            }
+            catch (Exception exception)
+            {
+                if (exception is IOException || exception is SocketException)
+                {
+                    _onlineStatusService.BecomeOffline();
+                    return 0;
+                }
+                throw;
+            }
 
             Array.Copy(_buffer, _position, buffer, offset, numberOfBytesToRead);
             _position += numberOfBytesToRead;
@@ -162,6 +160,10 @@ namespace RemoteMusicPlayerClient.Utility
 
         public override void Close()
         {
+            if (!_isOpen)
+            {
+                return;
+            }
             _isOpen = false;
             _networkStream.Close();
             base.Close();

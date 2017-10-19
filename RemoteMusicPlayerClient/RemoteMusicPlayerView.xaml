@@ -1,0 +1,21 @@
+﻿<Window x:Class="RemoteMusicPlayerClient.RemoteMusicPlayerView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:RemoteMusicPlayerClient"
+        xmlns:customFrameworkElements="clr-namespace:RemoteMusicPlayerClient.CustomFrameworkElements;assembly=CheckCircle"
+        xmlns:music="clr-namespace:RemoteMusicPlayerClient.Music"
+        xmlns:playlisting="clr-namespace:RemoteMusicPlayerClient.Music.Playlisting"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="350" Width="525">
+    <Grid>
+        <Button
+            Content="AddFiles"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Bottom"
+        />
+        <playlisting:PlaylistView></playlisting:PlaylistView>
+    </Grid>
+</Window>
+

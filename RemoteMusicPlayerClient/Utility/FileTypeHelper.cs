@@ -6,7 +6,7 @@ using CSCore.Codecs.MP3;
 
 namespace RemoteMusicPlayerClient.Utility
 {
-    public class FileTypeHelper
+    public class FileTypeHelper : IFileTypeHelper
     {
         public IWaveSource Decode(FileType fileType, Stream stream)
         {
@@ -34,7 +34,5 @@ namespace RemoteMusicPlayerClient.Utility
 
             throw new ArgumentException("Unknown file type");
         }
-
-        public static FileTypeHelper Instance { get; } = new FileTypeHelper();
     }
 }

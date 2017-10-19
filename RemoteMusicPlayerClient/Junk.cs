@@ -1,49 +1,43 @@
 ﻿using System;
-using System.Linq;
 using System.Net.Http;
-using System.Net.Sockets;
+using System.Threading.Tasks;
 using System.Web;
-using RemoteFileDialog.Utility;
-using RemoteMusicPlayerClient.Services;
+using RemoteMusicPlayerClient.DryIoc;
+using RemoteMusicPlayerClient.Music;
+using RemoteMusicPlayerClient.Networking;
 using RemoteMusicPlayerClient.Utility;
 
 namespace RemoteMusicPlayerClient
 {
     public class Junk
     {
+        private readonly IMusicPlayerService _musicPlayerService;
+        private readonly IContainer _container;
+        private readonly IFileTypeHelper _fileTypeHelper;
         private static readonly string _filePath = "D:\\Offtop\\Music\\Mr. Robot OST\\Mac Quayle - Mr. Robot, Vol. 1 (2016)\\08. 1.0_8-whatsyourask.m4p.flac";
 
-        public static async void DoShit()
+        public Junk(IMusicPlayerService musicPlayerService, IContainer container, IFileTypeHelper fileTypeHelper)
         {
-            var httpClient = new HttpClient();
-
-            
-            var query = HttpUtility.ParseQueryString("");
-            query["filePath"] = _filePath;
-            var url = $"http://localhost:5000/filesystem/GetTokenForFile?{query}";
-
-
-            var httpResponseMessage = await httpClient.GetAsync(url);
-
-            var token = await httpResponseMessage.Content.ReadAsStringAsync();
-
-            if (!httpResponseMessage.IsSuccessStatusCode)
-            {
-                throw new Exception("Plohoy zapros " + token);
-            }
-
-
-
-            var remoteFileReader = await RemoteFileReader.ByToken(token);
-
-            MusicPlayer.Instance.Initialize(FileTypeHelper.Instance.GetFileType(_filePath), remoteFileReader);
-
-            MusicPlayer.Instance.Play();
+            _musicPlayerService = musicPlayerService;
+            _container = container;
+            _fileTypeHelper = fileTypeHelper;
         }
 
-        public static void DoMoreShit()
+        public async void DoShit()
         {
-            var viewModel = DesignerObjects.DeisgnerRemoteFileDialogViewModel;
+            var remoteFileReaderFactory = _container.Resolve<IRemoteFileReaderFactory>();
+
+            var remoteFileReader = await remoteFileReaderFactory.ByPath(_filePath);
+
+            _musicPlayerService.Initialize(_fileTypeHelper.GetFileType(_filePath), remoteFileReader);
+            _musicPlayerService.Play();
+            //_musicPlayerService.Stop();
+
+
+            //_musicPlayerService.Position = (int)(_musicPlayerService.Length * 0.85);
+            //_musicPlayerService.Play();
+            //_musicPlayerService.Stop();
+
         }
     }
 }
