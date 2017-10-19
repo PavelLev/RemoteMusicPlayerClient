@@ -1,28 +1,31 @@
-﻿using DryIoc;
-using RemoteFileDialog.Entries;
-using RemoteFileDialog.Services;
-using RemoteFileDialog.Utility.Validators;
+﻿using System.Windows;
+using RemoteMusicPlayerClient.CustomFrameworkElements.DryIoc;
+using RemoteMusicPlayerClient.CustomFrameworkElements.Entries;
+using RemoteMusicPlayerClient.CustomFrameworkElements.Utility.Validators;
 
-namespace RemoteFileDialog.Utility
+namespace RemoteMusicPlayerClient.CustomFrameworkElements.Utility
 {
-    public class Ioc
+    public static class Ioc
     {
         static Ioc()
         {
             RegisterAllDependencies();
         }
-        
-        public static IContainer Container { get; } = new Container();
-
+        public static IContainer Container = new Container();
         public static void RegisterAllDependencies()
         {
             Container.Register<IEntryViewModel, EntryViewModel>();
 
-            Container.Register<IEntryService, EntryService>();
+            Container.Register<IEntryService, EntryService>(Reuse.Singleton);
 
-            Container.Register<EntryExistsValidationRule>();
+            Container.Register<EntryExistsValidationRule>(Reuse.Singleton);
 
-            Container.Register<IRemoteFileDialogViewModel, RemoteFileDialogViewModel>();
+            Container.Register<IRemoteFileDialogViewModel, RemoteFileDialogViewModel>(Reuse.Singleton);
+        }
+
+        public static void SetStaticResources(ResourceDictionary resources)
+        {
+            resources[nameof(EntryExistsValidationRule)] = Container.Resolve<EntryExistsValidationRule>();
         }
     }
 }

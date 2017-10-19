@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-namespace DryIoc
+namespace RemoteMusicPlayerClient.CustomFrameworkElements.DryIoc
 {
     using System;
     using System.Threading;

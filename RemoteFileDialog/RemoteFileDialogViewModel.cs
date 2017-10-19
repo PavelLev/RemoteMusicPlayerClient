@@ -1,33 +1,44 @@
 ﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
-using System.Windows.Data;
-using DryIoc;
 using Prism.Commands;
 using Prism.Mvvm;
-using RemoteFileDialog.Entries;
-using RemoteFileDialog.Services;
-using RemoteFileDialog.Utility.Validators;
+using RemoteMusicPlayerClient.CustomFrameworkElements.DryIoc;
+using RemoteMusicPlayerClient.CustomFrameworkElements.Entries;
+using RemoteMusicPlayerClient.CustomFrameworkElements.Utility.Validators;
 
-namespace RemoteFileDialog
+namespace RemoteMusicPlayerClient.CustomFrameworkElements
 {
     public class RemoteFileDialogViewModel : BindableBase, IRemoteFileDialogViewModel
     {
+        private readonly IEntryService _entryService;
+        private readonly IResolver _resolver;
+        private readonly ISelectedEntriesService _selectedEntriesService;
         private ICollection<IEntryViewModel> _rootEntryViewModels;
-        private DelegateCommand<Window> _ok;
-        private DelegateCommand<Window> _cancelCommand;
         private string _entryToCheckPath;
 
-        public RemoteFileDialogViewModel(IEntryService entryService, IContainer container)
+        public RemoteFileDialogViewModel(IEntryService entryService, IResolver resolver, ISelectedEntriesService selectedEntriesService)
         {
-            RootEntryViewModels = entryService.LoadRootEntries().Select(entry =>
+            _entryService = entryService;
+            _resolver = resolver;
+            _selectedEntriesService = selectedEntriesService;
+
+            OkCommand = new DelegateCommand<Window>(OkCommandAction);
+            CancelCommand = new DelegateCommand<Window>(CancelCommandAction);
+
+            LoadRootEntries();
+
+            EntryExistsValidationRule = resolver.Resolve<EntryExistsValidationRule>();
+        }
+
+        private async void LoadRootEntries()
+        {
+            RootEntryViewModels = (await _entryService.GetRootEntriesAsync()).Select(entry =>
             {
-                var entryViewModel = container.Resolve<IEntryViewModel>();
+                var entryViewModel = _resolver.Resolve<IEntryViewModel>();
                 entryViewModel.Entry = entry;
                 return entryViewModel;
             }).ToList();
-            EntryExistsValidationRule = container.Resolve<EntryExistsValidationRule>();
         }
 
         public void CheckEntry(string path)
@@ -49,6 +60,27 @@ namespace RemoteFileDialog
             }
         }
 
+        public void UncheckAll()
+        {
+            foreach (var rootEntryViewModel in RootEntryViewModels)
+            {
+                rootEntryViewModel.IsChecked = false;
+            }
+        }
+
+        public void OkCommandAction(Window window)
+        {
+            window.DialogResult = true;
+            SelectedFiles = _selectedEntriesService.SelectedEntries.Where(entry => !entry.IsDirectory).Select(entry => entry.Path).ToList();
+            window.Close();
+        }
+
+        public void CancelCommandAction(Window window)
+        {
+            window.DialogResult = false;
+            window.Close();
+        }
+
 
         public ICollection<IEntryViewModel> RootEntryViewModels
         {
@@ -56,17 +88,9 @@ namespace RemoteFileDialog
             set => SetProperty(ref _rootEntryViewModels, value);
         }
 
-        public DelegateCommand<Window> OkCommand => _ok ?? (_ok = new DelegateCommand<Window>(
-            window =>
-            {
-                window.DialogResult = true;
-            }));
+        public DelegateCommand<Window> OkCommand { get; }
 
-        public DelegateCommand<Window> CancelCommand => _cancelCommand ?? (_cancelCommand = new DelegateCommand<Window>(
-            window =>
-            {
-                window.DialogResult = false;
-            }));
+        public DelegateCommand<Window> CancelCommand { get; }
 
         public string EntryToCheckPath
         {
@@ -77,6 +101,8 @@ namespace RemoteFileDialog
                 CheckEntry(value);
             }
         }
+
+        public List<string> SelectedFiles { get; private set; }
 
         public EntryExistsValidationRule EntryExistsValidationRule { get; private set; }
     }

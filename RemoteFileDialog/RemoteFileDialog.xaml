@@ -1,18 +1,14 @@
-﻿<Window x:Class="RemoteFileDialog.RemoteFileDialogView"
+﻿<Window x:Class="RemoteMusicPlayerClient.CustomFrameworkElements.RemoteFileDialog"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-    xmlns:local="clr-namespace:RemoteFileDialog"
-    xmlns:entries="clr-namespace:RemoteFileDialog.Entries"
-    xmlns:utility="clr-namespace:RemoteFileDialog.Utility"
     xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-    xmlns:validators="clr-namespace:RemoteFileDialog.Utility.Validators"
+    xmlns:entries1="clr-namespace:RemoteMusicPlayerClient.CustomFrameworkElements.Entries"
     mc:Ignorable="d" 
     ResizeMode="NoResize"
     d:DesignHeight="400" d:DesignWidth="350"
-    d:DataContext="{x:Static utility:DesignerObjects.DeisgnerRemoteFileDialogViewModel}" 
-    Name="Window"
+    Name="Window" Closed="Window_Closed"
 >
     <Window.Resources>
         <ResourceDictionary Source="RemoteFileDialogResourceDictionary.xaml"/>
@@ -46,7 +42,7 @@
 
             <TreeView.Resources>
                 <HierarchicalDataTemplate 
-                    DataType="{x:Type entries:EntryViewModel}" 
+                    DataType="{x:Type entries1:EntryViewModel}" 
                     ItemsSource="{Binding ChildEntryViewModels}"
                 >
                     <StackPanel Orientation="Horizontal">
@@ -70,7 +66,7 @@
             <TextBox.Text>
                 <Binding Path="EntryToCheckPath">
                     <Binding.ValidationRules>
-                        <utility:ValidationRuleWrapper ValidationRule="{utility:IocResolver ServiceType={x:Type validators:EntryExistsValidationRule}}"></utility:ValidationRuleWrapper>
+                        <StaticResource ResourceKey="EntryExistsValidationRule"/>
                     </Binding.ValidationRules>
                 </Binding>
             </TextBox.Text>

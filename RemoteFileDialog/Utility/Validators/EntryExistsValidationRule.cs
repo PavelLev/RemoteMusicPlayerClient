@@ -1,8 +1,8 @@
 ﻿using System.Globalization;
 using System.Windows.Controls;
-using RemoteFileDialog.Services;
+using RemoteMusicPlayerClient.CustomFrameworkElements.Entries;
 
-namespace RemoteFileDialog.Utility.Validators
+namespace RemoteMusicPlayerClient.CustomFrameworkElements.Utility.Validators
 {
     public class EntryExistsValidationRule : ValidationRule
     {
@@ -15,7 +15,7 @@ namespace RemoteFileDialog.Utility.Validators
 
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
-            if (_entryService.EntryExists((string) value))
+            if (_entryService.EntryExists((string) value).Result)
             {
                 return new ValidationResult(true, null);
             }

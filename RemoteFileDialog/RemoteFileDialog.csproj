@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{3FC3B652-2561-42EB-B680-843CC5407016}</ProjectGuid>
     <OutputType>library</OutputType>
-    <RootNamespace>RemoteFileDialog</RootNamespace>
+    <RootNamespace>RemoteMusicPlayerClient.CustomFrameworkElements</RootNamespace>
     <AssemblyName>RemoteFileDialog</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -81,25 +81,24 @@
     <Compile Include="Entries\IEntryViewModel.cs" />
     <Compile Include="IRemoteFileDialogViewModel.cs" />
     <Compile Include="RemoteFileDialogViewModel.cs" />
-    <Compile Include="Services\EntryService.cs" />
-    <Compile Include="Services\IEntryService.cs" />
-    <Compile Include="Utility\DesignerObjects.cs" />
+    <Compile Include="Entries\EntryService.cs" />
+    <Compile Include="Entries\IEntryService.cs" />
+    <Compile Include="Entries\ISelectedEntriesService.cs" />
+    <Compile Include="Entries\SelectedEntriesService.cs" />
     <Compile Include="Utility\Ioc.cs" />
-    <Compile Include="Utility\IocResolver.cs" />
-    <Compile Include="Utility\ValidationRuleWrapper.cs" />
     <Compile Include="Utility\Validators\EntryExistsValidationRule.cs" />
     <Page Include="RemoteFileDialogResourceDictionary.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="RemoteFileDialogView.xaml">
+    <Page Include="RemoteFileDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Compile Include="Entries\Entry.cs" />
     <Compile Include="Entries\EntryViewModel.cs" />
-    <Compile Include="RemoteFileDialogView.xaml.cs">
-      <DependentUpon>RemoteFileDialogView.xaml</DependentUpon>
+    <Compile Include="RemoteFileDialog.xaml.cs">
+      <DependentUpon>RemoteFileDialog.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
