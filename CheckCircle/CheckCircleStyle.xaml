@@ -1,0 +1,72 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:customFrameworkElements="clr-namespace:RemoteMusicPlayerClient.CustomFrameworkElements">
+    <Style 
+        TargetType="customFrameworkElements:CheckCircle"
+    >
+        <Setter 
+            Property="VerticalContentAlignment" 
+            Value="Center"
+        />
+        <Setter 
+            Property="BorderBrush" 
+            Value="Black"
+        />
+        <Setter 
+            Property="Margin" 
+            Value="5"
+        />
+        <Setter 
+            Property="Template"
+        >
+            <Setter.Value>
+                <ControlTemplate 
+                    TargetType="customFrameworkElements:CheckCircle"
+                >
+                    <Grid 
+                        Background="Transparent"
+                        Name="grd"
+                        Margin="{TemplateBinding Padding}"
+                        VerticalAlignment="Stretch" 
+                        Width="{Binding 
+                            Path=ActualHeight, 
+                            Mode=OneWay, 
+                            RelativeSource={RelativeSource Self}
+                        }"
+                    >
+                        <Ellipse 
+                            x:Name="TopGlow" 
+                            Stretch="Uniform"
+                        >
+                            <Ellipse.Fill>
+                                <RadialGradientBrush 
+                                    x:Name="RadialGradientBrush" 
+                                    GradientOrigin="0.5, 1" 
+                                    RadiusX="1.5"
+                                >
+                                    <GradientStop 
+                                        x:Name="CurrentBrushGradientStop"
+                                        Offset="0.3"
+                                    />
+                                    <GradientStop 
+                                        x:Name="WhiteBrushGradientStop"
+                                        Color="White" 
+                                        Offset="1.07"
+                                    />
+                                </RadialGradientBrush>
+                            </Ellipse.Fill>
+                        </Ellipse>
+
+                        <Ellipse 
+                            x:Name="CircleBorder" 
+                            Stroke="{TemplateBinding BorderBrush}"
+                            StrokeThickness="1"
+                            Stretch="Uniform"
+                        />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+</ResourceDictionary>
