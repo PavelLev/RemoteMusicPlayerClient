@@ -1,8 +1,9 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:customFrameworkElements="clr-namespace:RemoteMusicPlayerClient.CustomFrameworkElements">
+                    xmlns:customFrameworkElements="clr-namespace:RemoteMusicPlayerClient.CustomFrameworkElements"
+                    xmlns:checkCircle="clr-namespace:RemoteMusicPlayerClient.CustomFrameworkElements.CheckCircle">
     <Style 
-        TargetType="customFrameworkElements:CheckCircle"
+        TargetType="checkCircle:CheckCircle"
     >
         <Setter 
             Property="VerticalContentAlignment" 
@@ -21,7 +22,7 @@
         >
             <Setter.Value>
                 <ControlTemplate 
-                    TargetType="customFrameworkElements:CheckCircle"
+                    TargetType="checkCircle:CheckCircle"
                 >
                     <Grid 
                         Background="Transparent"

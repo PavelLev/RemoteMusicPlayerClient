@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace RemoteMusicPlayerClient.CustomFrameworkElements
+namespace RemoteMusicPlayerClient.CustomFrameworkElements.CheckCircle
 {
     public class CheckCircle : CheckBox
     {

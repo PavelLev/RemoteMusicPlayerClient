@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace RemoteMusicPlayerClient.CustomFrameworkElements.Properties {
+namespace RemoteMusicPlayerClient.CustomFrameworkElements.CheckCircle.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

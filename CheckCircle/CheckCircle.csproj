@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{662C85F3-8192-420A-AB6E-7239761A353D}</ProjectGuid>
     <OutputType>library</OutputType>
-    <RootNamespace>RemoteMusicPlayerClient.CustomFrameworkElements</RootNamespace>
+    <RootNamespace>RemoteMusicPlayerClient.CustomFrameworkElements.CheckCircle</RootNamespace>
     <AssemblyName>CheckCircle</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
