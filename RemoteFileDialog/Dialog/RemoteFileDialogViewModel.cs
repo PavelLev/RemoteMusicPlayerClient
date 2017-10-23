@@ -1,27 +1,30 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using Prism.Commands;
 using Prism.Mvvm;
-using RemoteMusicPlayerClient.CustomFrameworkElements.DryIoc;
-using RemoteMusicPlayerClient.CustomFrameworkElements.Entries;
-using RemoteMusicPlayerClient.CustomFrameworkElements.Utility.Validators;
+using RemoteMusicPlayerClient.CustomFrameworkElements.RemoteFileDialog.DryIoc;
+using RemoteMusicPlayerClient.CustomFrameworkElements.RemoteFileDialog.Entries;
+using RemoteMusicPlayerClient.CustomFrameworkElements.RemoteFileDialog.Utility.Validators;
 
-namespace RemoteMusicPlayerClient.CustomFrameworkElements
+namespace RemoteMusicPlayerClient.CustomFrameworkElements.RemoteFileDialog
 {
     public class RemoteFileDialogViewModel : BindableBase, IRemoteFileDialogViewModel
     {
         private readonly IEntryService _entryService;
         private readonly IResolver _resolver;
         private readonly ISelectedEntriesService _selectedEntriesService;
+        private readonly IDialogModeService _dialogModeService;
         private ICollection<IEntryViewModel> _rootEntryViewModels;
         private string _entryToCheckPath;
 
-        public RemoteFileDialogViewModel(IEntryService entryService, IResolver resolver, ISelectedEntriesService selectedEntriesService)
+        public RemoteFileDialogViewModel(IEntryService entryService, IResolver resolver, ISelectedEntriesService selectedEntriesService, IDialogModeService dialogModeService)
         {
             _entryService = entryService;
             _resolver = resolver;
             _selectedEntriesService = selectedEntriesService;
+            _dialogModeService = dialogModeService;
 
             OkCommand = new DelegateCommand<Window>(OkCommandAction);
             CancelCommand = new DelegateCommand<Window>(CancelCommandAction);
@@ -71,7 +74,19 @@ namespace RemoteMusicPlayerClient.CustomFrameworkElements
         public void OkCommandAction(Window window)
         {
             window.DialogResult = true;
-            SelectedFiles = _selectedEntriesService.SelectedEntries.Where(entry => !entry.IsDirectory).Select(entry => entry.Path).ToList();
+
+            switch (_dialogModeService.Current)
+            {
+                case DialogMode.Files:
+                    SelectedFiles = _selectedEntriesService.GetFilePathList();
+                    break;
+                case DialogMode.Directories:
+                    SelectedDirectories = _selectedEntriesService.GetDirectoryPathList();
+                    break;
+                default:
+                    throw new InvalidOperationException("Unsupported DialogMode");
+            }
+
             window.Close();
         }
 
@@ -103,7 +118,8 @@ namespace RemoteMusicPlayerClient.CustomFrameworkElements
         }
 
         public List<string> SelectedFiles { get; private set; }
+        public List<string> SelectedDirectories { get; private set; }
 
-        public EntryExistsValidationRule EntryExistsValidationRule { get; private set; }
+        public EntryExistsValidationRule EntryExistsValidationRule { get; }
     }
 }

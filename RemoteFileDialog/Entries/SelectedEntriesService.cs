@@ -1,13 +1,29 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
-namespace RemoteMusicPlayerClient.CustomFrameworkElements.Entries
+namespace RemoteMusicPlayerClient.CustomFrameworkElements.RemoteFileDialog.Entries
 {
     public class SelectedEntriesService : ISelectedEntriesService
     {
-        public SelectedEntriesService()
+        private ICollection<Entry> SelectedEntries { get; } = new List<Entry>();
+        public void Add(Entry entry)
         {
-            
+            SelectedEntries.Add(entry);
         }
-        public ICollection<Entry> SelectedEntries { get; } = new List<Entry>();
+
+        public bool Remove(Entry entry)
+        {
+            return SelectedEntries.Remove(entry);
+        }
+
+        public List<string> GetFilePathList()
+        {
+            return SelectedEntries.Where(entry => !entry.IsDirectory).Select(entry => entry.Path).ToList();
+        }
+
+        public List<string> GetDirectoryPathList()
+        {
+            return SelectedEntries.Where(entry => entry.IsDirectory).Select(entry => entry.Path).ToList();
+        }
     }
 }

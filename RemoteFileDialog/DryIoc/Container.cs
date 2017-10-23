@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-namespace RemoteMusicPlayerClient.CustomFrameworkElements.DryIoc
+namespace RemoteMusicPlayerClient.CustomFrameworkElements.RemoteFileDialog.DryIoc
 {
     using System;
     using System.Collections;
@@ -10734,7 +10734,7 @@ namespace RemoteMusicPlayerClient.CustomFrameworkElements.DryIoc
     }
 }
 
-namespace RemoteMusicPlayerClient.CustomFrameworkElements.DryIoc.Experimental
+namespace RemoteMusicPlayerClient.CustomFrameworkElements.RemoteFileDialog.DryIoc.Experimental
 {
     using System;
     using System.Reflection;

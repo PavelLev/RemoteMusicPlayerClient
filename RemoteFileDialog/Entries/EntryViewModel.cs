@@ -3,10 +3,10 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using Prism.Mvvm;
-using RemoteMusicPlayerClient.CustomFrameworkElements.DryIoc;
-using IContainer = RemoteMusicPlayerClient.CustomFrameworkElements.DryIoc.IContainer;
+using RemoteMusicPlayerClient.CustomFrameworkElements.RemoteFileDialog.DryIoc;
+using IContainer = RemoteMusicPlayerClient.CustomFrameworkElements.RemoteFileDialog.DryIoc.IContainer;
 
-namespace RemoteMusicPlayerClient.CustomFrameworkElements.Entries
+namespace RemoteMusicPlayerClient.CustomFrameworkElements.RemoteFileDialog.Entries
 {
     public class EntryViewModel : BindableBase, IEntryViewModel
     {
@@ -91,7 +91,7 @@ namespace RemoteMusicPlayerClient.CustomFrameworkElements.Entries
 
                 if (value)
                 {
-                    _selectedEntriesService.SelectedEntries.Add(Entry);
+                    _selectedEntriesService.Add(Entry);
 
                     if (_entry.ChildEntries == null)
                     {
@@ -100,7 +100,7 @@ namespace RemoteMusicPlayerClient.CustomFrameworkElements.Entries
                 }
                 else
                 {
-                    _selectedEntriesService.SelectedEntries.Remove(Entry);
+                    _selectedEntriesService.Remove(Entry);
                 }
 
 

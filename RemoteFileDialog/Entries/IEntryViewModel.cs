@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 
-namespace RemoteMusicPlayerClient.CustomFrameworkElements.Entries
+namespace RemoteMusicPlayerClient.CustomFrameworkElements.RemoteFileDialog.Entries
 {
     public interface IEntryViewModel : INotifyPropertyChanged
     {

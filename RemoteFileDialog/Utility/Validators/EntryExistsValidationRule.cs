@@ -1,8 +1,8 @@
 ﻿using System.Globalization;
 using System.Windows.Controls;
-using RemoteMusicPlayerClient.CustomFrameworkElements.Entries;
+using RemoteMusicPlayerClient.CustomFrameworkElements.RemoteFileDialog.Entries;
 
-namespace RemoteMusicPlayerClient.CustomFrameworkElements.Utility.Validators
+namespace RemoteMusicPlayerClient.CustomFrameworkElements.RemoteFileDialog.Utility.Validators
 {
     public class EntryExistsValidationRule : ValidationRule
     {

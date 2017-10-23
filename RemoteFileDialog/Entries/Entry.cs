@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Prism.Mvvm;
 
-namespace RemoteMusicPlayerClient.CustomFrameworkElements.Entries
+namespace RemoteMusicPlayerClient.CustomFrameworkElements.RemoteFileDialog.Entries
 {
     public class Entry : BindableBase
     {

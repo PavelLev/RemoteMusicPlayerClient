@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace RemoteMusicPlayerClient.CustomFrameworkElements.Entries
+namespace RemoteMusicPlayerClient.CustomFrameworkElements.RemoteFileDialog.Entries
 {
     public interface IEntryService
     {

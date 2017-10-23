@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace RemoteMusicPlayerClient.CustomFrameworkElements.Properties {
+namespace RemoteMusicPlayerClient.CustomFrameworkElements.RemoteFileDialog.Properties {
     using System;
     
     
@@ -39,7 +39,8 @@ namespace RemoteMusicPlayerClient.CustomFrameworkElements.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("RemoteMusicPlayerClient.CustomFrameworkElements.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("RemoteMusicPlayerClient.CustomFrameworkElements.RemoteFileDialog.Properties.Resou" +
+                            "rces", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

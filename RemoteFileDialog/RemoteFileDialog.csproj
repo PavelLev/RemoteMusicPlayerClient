@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{3FC3B652-2561-42EB-B680-843CC5407016}</ProjectGuid>
     <OutputType>library</OutputType>
-    <RootNamespace>RemoteMusicPlayerClient.CustomFrameworkElements</RootNamespace>
+    <RootNamespace>RemoteMusicPlayerClient.CustomFrameworkElements.RemoteFileDialog</RootNamespace>
     <AssemblyName>RemoteFileDialog</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -74,30 +74,33 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dialog\DialogMode.cs" />
+    <Compile Include="Dialog\DialogModeService.cs" />
+    <Compile Include="Dialog\IDialogModeService.cs" />
     <Compile Include="DryIoc\AsyncExecutionFlowScopeContext.cs" />
     <Compile Include="DryIoc\Container.cs" />
     <Compile Include="DryIoc\FastExpressionCompiler.cs" />
     <Compile Include="DryIoc\ImTools.cs" />
     <Compile Include="Entries\IEntryViewModel.cs" />
-    <Compile Include="IRemoteFileDialogViewModel.cs" />
-    <Compile Include="RemoteFileDialogViewModel.cs" />
+    <Compile Include="Dialog\IRemoteFileDialogViewModel.cs" />
+    <Compile Include="Dialog\RemoteFileDialogViewModel.cs" />
     <Compile Include="Entries\EntryService.cs" />
     <Compile Include="Entries\IEntryService.cs" />
     <Compile Include="Entries\ISelectedEntriesService.cs" />
     <Compile Include="Entries\SelectedEntriesService.cs" />
     <Compile Include="Utility\Ioc.cs" />
     <Compile Include="Utility\Validators\EntryExistsValidationRule.cs" />
-    <Page Include="RemoteFileDialogResourceDictionary.xaml">
+    <Page Include="Dialog\RemoteFileDialogResourceDictionary.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="RemoteFileDialog.xaml">
+    <Page Include="Dialog\RemoteFileDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Compile Include="Entries\Entry.cs" />
     <Compile Include="Entries\EntryViewModel.cs" />
-    <Compile Include="RemoteFileDialog.xaml.cs">
+    <Compile Include="Dialog\RemoteFileDialog.xaml.cs">
       <DependentUpon>RemoteFileDialog.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
@@ -126,5 +129,6 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

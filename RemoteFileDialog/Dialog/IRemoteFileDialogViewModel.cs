@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
 using Prism.Commands;
-using RemoteMusicPlayerClient.CustomFrameworkElements.Entries;
+using RemoteMusicPlayerClient.CustomFrameworkElements.RemoteFileDialog.Entries;
 
-namespace RemoteMusicPlayerClient.CustomFrameworkElements
+namespace RemoteMusicPlayerClient.CustomFrameworkElements.RemoteFileDialog
 {
     public interface IRemoteFileDialogViewModel
     {
@@ -14,5 +14,6 @@ namespace RemoteMusicPlayerClient.CustomFrameworkElements
         DelegateCommand<Window> CancelCommand { get; }
         string EntryToCheckPath { get; }
         List<string> SelectedFiles { get; }
+        List<string> SelectedDirectories { get; }
     }
 }

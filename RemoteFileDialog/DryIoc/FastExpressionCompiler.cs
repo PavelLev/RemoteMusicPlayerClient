@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-namespace RemoteMusicPlayerClient.CustomFrameworkElements.FastExpressionCompiler
+namespace RemoteMusicPlayerClient.CustomFrameworkElements.RemoteFileDialog.FastExpressionCompiler
 {
     using System;
     using System.Collections.Generic;

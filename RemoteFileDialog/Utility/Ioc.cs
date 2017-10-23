@@ -1,9 +1,9 @@
 ﻿using System.Windows;
-using RemoteMusicPlayerClient.CustomFrameworkElements.DryIoc;
-using RemoteMusicPlayerClient.CustomFrameworkElements.Entries;
-using RemoteMusicPlayerClient.CustomFrameworkElements.Utility.Validators;
+using RemoteMusicPlayerClient.CustomFrameworkElements.RemoteFileDialog.DryIoc;
+using RemoteMusicPlayerClient.CustomFrameworkElements.RemoteFileDialog.Entries;
+using RemoteMusicPlayerClient.CustomFrameworkElements.RemoteFileDialog.Utility.Validators;
 
-namespace RemoteMusicPlayerClient.CustomFrameworkElements.Utility
+namespace RemoteMusicPlayerClient.CustomFrameworkElements.RemoteFileDialog.Utility
 {
     public static class Ioc
     {
@@ -14,13 +14,13 @@ namespace RemoteMusicPlayerClient.CustomFrameworkElements.Utility
         public static IContainer Container = new Container();
         public static void RegisterAllDependencies()
         {
-            Container.Register<IEntryViewModel, EntryViewModel>();
+            Container.Register<IDialogModeService, DialogModeService>(Reuse.Singleton);
+            Container.Register<IRemoteFileDialogViewModel, RemoteFileDialogViewModel>(Reuse.Singleton);
 
+            Container.Register<IEntryViewModel, EntryViewModel>();
             Container.Register<IEntryService, EntryService>(Reuse.Singleton);
 
             Container.Register<EntryExistsValidationRule>(Reuse.Singleton);
-
-            Container.Register<IRemoteFileDialogViewModel, RemoteFileDialogViewModel>(Reuse.Singleton);
         }
 
         public static void SetStaticResources(ResourceDictionary resources)

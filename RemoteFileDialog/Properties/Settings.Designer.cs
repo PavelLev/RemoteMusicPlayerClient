@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace RemoteMusicPlayerClient.CustomFrameworkElements.Properties {
+namespace RemoteMusicPlayerClient.CustomFrameworkElements.RemoteFileDialog.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
