@@ -88,6 +88,7 @@
     <Compile Include="Entries\IEntryService.cs" />
     <Compile Include="Entries\ISelectedEntriesService.cs" />
     <Compile Include="Entries\SelectedEntriesService.cs" />
+    <Compile Include="Utility\BaseHttpService.cs" />
     <Compile Include="Utility\Ioc.cs" />
     <Compile Include="Utility\Validators\EntryExistsValidationRule.cs" />
     <Page Include="Dialog\RemoteFileDialogResourceDictionary.xaml">
