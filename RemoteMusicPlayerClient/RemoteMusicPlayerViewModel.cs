@@ -5,7 +5,7 @@ using System.Linq;
 using System.Net.Http;
 using Prism.Commands;
 using Prism.Mvvm;
-using RemoteMusicPlayerClient.CustomFrameworkElements;
+using RemoteMusicPlayerClient.CustomFrameworkElements.RemoteFileDialog;
 using RemoteMusicPlayerClient.Music;
 using RemoteMusicPlayerClient.Music.Playlisting;
 using RemoteMusicPlayerClient.Networking;
@@ -15,7 +15,6 @@ namespace RemoteMusicPlayerClient
     public class RemoteMusicPlayerViewModel : BindableBase, IRemoteMusicPlayerViewModel
     {
         private readonly IMusicPlayerService _musicPlayerService;
-        private readonly IPlaylistService _playlistService;
         private readonly IPlayOrderService _playOrderService;
         private readonly IOnlineStatusService _onlineStatusService;
         private readonly IPlaylistFileDownloadStateService _playlistFileDownloadStateService;
@@ -28,13 +27,13 @@ namespace RemoteMusicPlayerClient
         private bool _stopOnPlaylistEnd;
         private OnlineStatus _currentOnlineStatus;
 
-        public RemoteMusicPlayerViewModel(IMusicPlayerService musicPlayerService, IPlaylistService playlistService,
-            IPlaylistCollectionViewModel playlistCollection, IPlayOrderService playOrderService, IOnlineStatusService onlineStatusService,
+        public RemoteMusicPlayerViewModel(IMusicPlayerService musicPlayerService,
+            IPlaylistCollectionViewModel playlistCollection, IPlayOrderService playOrderService,
+            IOnlineStatusService onlineStatusService,
             IPlaylistFileDownloadStateService playlistFileDownloadStateService)
         {
-            AddFilesCommand = new DelegateCommand(AddFilesCommandAction);
+            EditSelectedPlaylistCommand = new DelegateCommand(EditSelectedPlaylist);
 
-            _playlistService = playlistService;
             _playOrderService = playOrderService;
             _onlineStatusService = onlineStatusService;
             _playlistFileDownloadStateService = playlistFileDownloadStateService;
@@ -131,18 +130,19 @@ namespace RemoteMusicPlayerClient
             _musicPlayerService.Pause();
         }
 
-        public void AddFilesCommandAction()
+        public async void EditSelectedPlaylist()
         {
-            var remoteFileDialogView = new RemoteFileDialog();
+            var remoteFileDialogView = await RemoteFileDialog.CreateAsync(DialogMode.Directories);
             remoteFileDialogView.ShowDialog();
             if (remoteFileDialogView.DialogResult != true)
             {
                 return;
             }
 
-            var selectedFiles = remoteFileDialogView.SelectedFiles;
+            var selectedDirectories = remoteFileDialogView.SelectedDirectories;
 
-            _playlistService.Add(PlaylistCollection.Selected, selectedFiles);
+            PlaylistCollection.Selected.AddSources(selectedDirectories);
+            PlaylistCollection.Selected.Rescan();
         }
 
         public void CurrentPlaylistChanged(object sender, EventArgs eventArgs)
@@ -152,7 +152,7 @@ namespace RemoteMusicPlayerClient
             PlayOrderCurrentFile = currentFile;
         }
 
-        public DelegateCommand AddFilesCommand { get; }
+        public DelegateCommand EditSelectedPlaylistCommand { get; }
 
         public IPlaylistCollectionViewModel PlaylistCollection { get; }
 
@@ -187,7 +187,7 @@ namespace RemoteMusicPlayerClient
                 }
                 catch (ArgumentException)
                 {
-                    PlaylistCollection.Current.Remove(value);
+                    PlaylistCollection.Current.Rescan();
                     PlayNext();
                 }
                 catch (Exception exception)

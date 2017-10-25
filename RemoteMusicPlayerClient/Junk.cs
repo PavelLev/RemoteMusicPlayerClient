@@ -27,7 +27,7 @@ namespace RemoteMusicPlayerClient
         {
             var remoteFileReaderFactory = _container.Resolve<IRemoteFileReaderFactory>();
 
-            var remoteFileReader = await remoteFileReaderFactory.ByPath(_filePath);
+            var remoteFileReader = await remoteFileReaderFactory.StartUse(_filePath);
 
             _musicPlayerService.Initialize(_fileTypeHelper.GetFileType(_filePath), remoteFileReader);
             _musicPlayerService.Play();

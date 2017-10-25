@@ -7,7 +7,7 @@ using RemoteMusicPlayerClient.Utility;
 
 namespace RemoteMusicPlayerClient.Music.Playlisting
 {
-    public class PlaylistFileViewModel : BindableBase, IDisposable
+    public class PlaylistFileViewModel : BindableBase
     {
         private readonly IRemoteFileReaderFactory _remoteFileReaderFactory;
         private bool _isChecked;
@@ -26,6 +26,11 @@ namespace RemoteMusicPlayerClient.Music.Playlisting
             IsChecked = isChecked;
 
             SelectToPlayCommand = new DelegateCommand(SelectToPlay);
+        }
+
+        ~PlaylistFileViewModel()
+        {
+            _remoteFileReaderFactory.StopUse(Path);
         }
 
         public void SelectToPlay()
@@ -57,11 +62,6 @@ namespace RemoteMusicPlayerClient.Music.Playlisting
             set => SetProperty(ref _metadata, value);
         }
 
-        public RemoteFileReader Stream => _stream ?? (_stream = _remoteFileReaderFactory.ByPath(Path).Result);
-
-        public void Dispose()
-        {
-            _stream?.Dispose();
-        }
+        public RemoteFileReader Stream => _stream ?? (_stream = _remoteFileReaderFactory.StartUse(Path).Result);
     }
 }

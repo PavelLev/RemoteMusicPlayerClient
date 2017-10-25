@@ -1,43 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
+using System.Web;
 using Prism.Mvvm;
+using RemoteMusicPlayerClient.DryIoc;
+using RemoteMusicPlayerClient.Networking.Files;
 
 namespace RemoteMusicPlayerClient.Music.Playlisting
 {
-    public class PlaylistViewModel : BindableBase, IDisposable
+    public class PlaylistViewModel : BindableBase
     {
+        private readonly IPlaylistService _playlistService;
         private ObservableCollection<PlaylistDirectoryViewModel> _directories;
         private string _name;
-        
-        public void Remove(PlaylistFileViewModel playlistFileViewModel)
+
+        public PlaylistViewModel(IPlaylistService playlistService)
         {
-            var playlistFileFound = Directories.Any(playlistDirectoryViewModel =>
-                playlistDirectoryViewModel.Files.Remove(playlistFileViewModel));
-
-            playlistFileViewModel.Dispose();
-
-            if (!playlistFileFound)
-            {
-                throw new ArgumentException("playlist doesn't contain specified playlistFile",
-                    nameof(playlistFileViewModel));
-            }
+            _playlistService = playlistService;
         }
 
-        public void UpdateSelection(PlaylistDirectoryViewModel playlistDirectoryViewModel = null,
-            PlaylistFileViewModel playlistFileViewModel = null, bool ShouldAppend = false, bool IsSegment = false)
+        public void AddSources(IEnumerable<string> newSourceDirectories)
         {
-            throw new NotImplementedException();
+            _playlistService.AddSources(SourceDirectories, newSourceDirectories);
         }
 
-        public void Dispose()
+        public void Rescan()
         {
-            foreach (var playlistDirectoryViewModel in Directories)
-            {
-                playlistDirectoryViewModel.Dispose();
-            }
+            _playlistService.Rescan(this);
         }
 
         public string Name
@@ -55,5 +47,7 @@ namespace RemoteMusicPlayerClient.Music.Playlisting
         public PlaylistFileViewModel First => Directories.First().Files.First();
         public PlaylistFileViewModel Last => Directories.Last().Files.Last();
         public IEnumerable<PlaylistFileViewModel> AllFiles => Directories.SelectMany(directory => directory.Files);
+
+        public ObservableCollection<string> SourceDirectories { get; } = new ObservableCollection<string>();
     }
 }

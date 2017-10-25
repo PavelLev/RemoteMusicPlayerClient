@@ -1,10 +1,14 @@
-﻿using System.Windows;
+﻿using System.Net.Http;
+using System.Net.Sockets;
+using System.Security.Cryptography;
+using System.Windows;
 using CSCore.SoundOut;
 using Newtonsoft.Json;
 using RemoteMusicPlayerClient.DryIoc;
 using RemoteMusicPlayerClient.Music;
 using RemoteMusicPlayerClient.Music.Playlisting;
 using RemoteMusicPlayerClient.Networking;
+using RemoteMusicPlayerClient.Networking.Files;
 
 namespace RemoteMusicPlayerClient.Utility
 {
@@ -19,23 +23,25 @@ namespace RemoteMusicPlayerClient.Utility
         {
             Container.Register<IPlaylistCollectionViewModel, PlaylistCollectionViewModel>();
             Container.Register<IPlaylistFileDownloadStateService, PlaylistFileDownloadStateService>(Reuse.Singleton);
-            Container.Register<PlaylistDirectoryViewModel>(setup: Setup.With(allowDisposableTransient: true));
-            Container.Register<PlaylistFileViewModel>(setup: Setup.With(allowDisposableTransient: true));
-            Container.Register<IPlaylistService, PlaylistService>(Reuse.Singleton);
-            Container.Register<PlaylistViewModel>(setup: Setup.With(allowDisposableTransient: true));
+            Container.Register<PlaylistDirectoryViewModel>();
+            Container.Register<PlaylistFileViewModel>();
+            Container.Register<PlaylistViewModel>();
 
-            Container.Register<IMusicPlayerService, MusicPlayerService>();
-            Container.Register<IPlayOrderService, PlayOrderService>();
+            Container.Register<IMusicPlayerService, MusicPlayerService>(Reuse.Singleton);
+            Container.Register<IPlayOrderService, PlayOrderService>(Reuse.Singleton);
             Container.UseInstance<ISoundOut>(new WasapiOut());
 
-            Container.Register<IOnlineStatusService, OnlineStatusService>();
+            Container.Register<IFileService, FileService>(Reuse.Singleton);
+            Container.Register<IOnlineStatusService, OnlineStatusService>(Reuse.Singleton);
             Container.Register<RemoteFileReader>(setup: Setup.With(allowDisposableTransient: true));
             Container.Register<IRemoteFileReaderFactory, RemoteFileReaderFactory>(Reuse.Singleton);
 
             Container.Register<IApplicationNameService, ApplicationNameService>(Reuse.Singleton);
             Container.Register<IFileNameExtractor, FileNameExtractor>(Reuse.Singleton);
             Container.Register<IFileTypeHelper, FileTypeHelper>(Reuse.Singleton);
+            Container.Register<HttpClient>();
             Container.Register<JsonSerializer>();
+            Container.Register<SHA256>();
             Container.Register<IToastService, ToastService>(Reuse.Singleton);
 
             Container.Register<IRemoteMusicPlayerViewModel, RemoteMusicPlayerViewModel>();

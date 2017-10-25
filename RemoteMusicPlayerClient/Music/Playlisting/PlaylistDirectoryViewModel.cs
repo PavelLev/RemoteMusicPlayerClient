@@ -6,7 +6,7 @@ using Prism.Mvvm;
 
 namespace RemoteMusicPlayerClient.Music.Playlisting
 {
-    public class PlaylistDirectoryViewModel : BindableBase, IDisposable
+    public class PlaylistDirectoryViewModel : BindableBase
     {
         private ObservableCollection<PlaylistFileViewModel> _files;
 
@@ -22,14 +22,6 @@ namespace RemoteMusicPlayerClient.Music.Playlisting
                         RaisePropertyChanged(nameof(IsChecked));
                     }
                 };
-            }
-        }
-
-        public void Dispose()
-        {
-            foreach (var playlistFileViewModel in Files)
-            {
-                playlistFileViewModel?.Dispose();
             }
         }
 

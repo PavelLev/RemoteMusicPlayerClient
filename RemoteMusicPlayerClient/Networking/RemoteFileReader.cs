@@ -2,11 +2,10 @@
 using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
-using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using RemoteMusicPlayerClient.Utility;
+using RemoteMusicPlayerClient.Networking.Caching;
 using RemoteMusicPlayerClient.Utility.Segments;
 
 namespace RemoteMusicPlayerClient.Networking
@@ -16,29 +15,56 @@ namespace RemoteMusicPlayerClient.Networking
         private const int MemStreamMaxLength = int.MaxValue;
         private int _position;
         private readonly int _length;
+        private readonly string _token;
         private bool _isOpen = true;
         private readonly byte[] _buffer;
         private readonly SegmentCollection _localSegments;
-        private readonly NetworkStream _networkStream;
+        private NetworkStream _networkStream;
         private readonly JsonSerializer _jsonSerializer;
         private readonly IOnlineStatusService _onlineStatusService;
+        private readonly ICachingService _cachingService;
+        private JsonTextWriter _jsonTextWriter;
+        private bool _shouldReconnect;
 
-        private readonly JsonTextWriter _jsonTextWriter;
-
-        public RemoteFileReader(int length, NetworkStream networkStream, JsonSerializer jsonSerializer, IOnlineStatusService onlineStatusService)
+        public RemoteFileReader(int length, string token, string cacheFileName, JsonSerializer jsonSerializer, IOnlineStatusService onlineStatusService, ICachingService cachingService)
         {
             _length = length;
+            _token = token;
 
             _localSegments = new SegmentCollection(length);
 
             _buffer = new byte[length];
-
-            _networkStream = networkStream;
+            
             _jsonSerializer = jsonSerializer;
             _onlineStatusService = onlineStatusService;
+            _cachingService = cachingService;
+
+            InitializeNetworkStream().Wait();
+
+            onlineStatusService.OnlineStatusChanged += newOnlineStatus =>
+            {
+                if (newOnlineStatus == OnlineStatus.Online)
+                {
+                    _shouldReconnect = true;
+                }
+            };
+
+            _cachingService.InitializeAsync(cacheFileName, _buffer)
+                .ContinueWith(readTask => _localSegments.Add(new Segment(0, readTask.Result)));
+        }
+
+        private async Task InitializeNetworkStream()
+        {
+            var tcpClient = new TcpClient();
+            await tcpClient.ConnectAsync("localhost", 54364);
+
+            var networkStream = tcpClient.GetStream();
+
+            networkStream.WriteAsync(_token);
+
+            _networkStream = networkStream;
             _jsonTextWriter = new JsonTextWriter(new StreamWriter(networkStream));
         }
-        
 
         public override void Flush()
         {
@@ -97,19 +123,19 @@ namespace RemoteMusicPlayerClient.Networking
         {
             if (buffer == null)
             {
-                throw new ArgumentNullException(nameof(buffer), "ArgumentNull_Buffer");
+                throw new ArgumentNullException(nameof(buffer), "Buffer shouldn't be null");
             }
             if (offset < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(offset), "ArgumentOutOfRange_NeedNonNegNum");
+                throw new ArgumentOutOfRangeException(nameof(offset), "Offset shouldn't be negative");
             }
             if (count < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(count), "ArgumentOutOfRange_NeedNonNegNum");
+                throw new ArgumentOutOfRangeException(nameof(count), "Count shouldn't be negative");
             }
             if (offset + count > buffer.Length)
             {
-                throw new ArgumentException("Argument_InvalidOffLen");
+                throw new ArgumentException("Requested segment exceeds file size");
             }
             ThrowIfStreamIsClosed();
 
@@ -124,24 +150,56 @@ namespace RemoteMusicPlayerClient.Networking
             }
             
             var absentSegments = _localSegments.Add(new Segment(_position, _position + numberOfBytesToRead - 1));
+            
+            if (_networkStream == null && _shouldReconnect)
+            {
+                _shouldReconnect = false;
+                try
+                {
+                    InitializeNetworkStream().Wait();
+                }
+                catch (IOException)
+                {
+                    _onlineStatusService.BecomeOffline();
+                    return 0;
+                }
+            }
+
+            if (_networkStream == null)
+            {
+                return 0;
+            }
+
+            var readTasks = absentSegments.Select(absentSegment =>
+            {
+                _jsonSerializer.Serialize(_jsonTextWriter, absentSegment);
+                _jsonTextWriter.Flush();
+
+                var readTask = _networkStream.ReadAsync(_buffer, absentSegment.Begin, absentSegment.Count);
+
+                readTask.ContinueWith(task =>
+                {
+                    _cachingService.Write(absentSegment);
+                });
+
+                return readTask;
+            }).ToArray();
 
             try
             {
-                var readTasks = absentSegments.Select(absentSegment =>
-                {
-                    _jsonSerializer.Serialize(_jsonTextWriter, absentSegment);
-                    _jsonTextWriter.Flush();
-
-                    return _networkStream.ReadAsync(_buffer, absentSegment.Begin, absentSegment.Count);
-                }).ToArray();
                 Task.WaitAll(readTasks);
+
                 _onlineStatusService.BecomeOnline();
             }
             catch (Exception exception)
             {
                 if (exception is IOException || exception is SocketException)
                 {
+                    _networkStream.Close();
+                    _networkStream = null;
+
                     _onlineStatusService.BecomeOffline();
+                    
                     return 0;
                 }
                 throw;
@@ -166,6 +224,9 @@ namespace RemoteMusicPlayerClient.Networking
             }
             _isOpen = false;
             _networkStream.Close();
+
+            _cachingService.Close();
+
             base.Close();
         }
 
@@ -212,13 +273,13 @@ namespace RemoteMusicPlayerClient.Networking
             if (value < 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(value),
-                    "Position cannot be set to a value less than zero");
+                    "Value shouldn't be negative");
             }
 
             if (value > MemStreamMaxLength)
             {
                 throw new ArgumentOutOfRangeException(nameof(value),
-                    $"Position cannot be set to a value greater than {MemStreamMaxLength}");
+                    $"Value shouldn't be greater than {MemStreamMaxLength}");
             }
         }
     }
