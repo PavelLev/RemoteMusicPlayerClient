@@ -13,11 +13,11 @@ namespace RemoteMusicPlayerClient.Music.Playlisting
         private int _currentIndex;
         private PlaylistViewModel _selected;
 
-        public PlaylistCollectionViewModel(IContainer container, ObservableCollection<PlaylistViewModel> playlists = null)
+        public PlaylistCollectionViewModel(IContainer container, IPlaylistSaverService playlistSaverService)
         {
             _container = container;
 
-            All = playlists ?? new ObservableCollection<PlaylistViewModel>();
+            All = playlistSaverService.LoadAll<ObservableCollection<PlaylistViewModel>>();
             PreventEmptiness();
             All.CollectionChanged += (sender, args) => PreventEmptiness();
         }

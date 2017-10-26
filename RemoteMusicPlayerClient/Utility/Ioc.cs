@@ -21,10 +21,11 @@ namespace RemoteMusicPlayerClient.Utility
         public static IContainer Container = new Container();
         public static void RegisterAllDependencies()
         {
-            Container.Register<IPlaylistCollectionViewModel, PlaylistCollectionViewModel>();
+            Container.Register<IPlaylistCollectionViewModel, PlaylistCollectionViewModel>(Reuse.Singleton);
             Container.Register<IPlaylistFileDownloadStateService, PlaylistFileDownloadStateService>(Reuse.Singleton);
             Container.Register<PlaylistDirectoryViewModel>();
             Container.Register<PlaylistFileViewModel>();
+            Container.Register<IPlaylistSaverService, PlaylistSaverService>(Reuse.Singleton);
             Container.Register<PlaylistViewModel>();
 
             Container.Register<IMusicPlayerService, MusicPlayerService>(Reuse.Singleton);
@@ -44,8 +45,8 @@ namespace RemoteMusicPlayerClient.Utility
             Container.Register<SHA256>();
             Container.Register<IToastService, ToastService>(Reuse.Singleton);
 
-            Container.Register<IRemoteMusicPlayerViewModel, RemoteMusicPlayerViewModel>();
-            Container.Register<RemoteMusicPlayerView>();
+            Container.Register<IRemoteMusicPlayerViewModel, RemoteMusicPlayerViewModel>(Reuse.Singleton);
+            Container.Register<RemoteMusicPlayerView>(Reuse.Singleton);
         }
 
         public static void SetStaticResources(ResourceDictionary resources)

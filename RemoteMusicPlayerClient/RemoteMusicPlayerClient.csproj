@@ -91,10 +91,12 @@
     <Compile Include="Music\IPlayOrderService.cs" />
     <Compile Include="Music\MetadataService.cs" />
     <Compile Include="Music\Playlisting\IPlaylistCollectionViewModel.cs" />
+    <Compile Include="Music\Playlisting\IPlaylistSaverService.cs" />
     <Compile Include="Music\Playlisting\IPlaylistService.cs" />
     <Compile Include="Music\Playlisting\PlaylistCollectionViewModel.cs" />
     <Compile Include="Music\Playlisting\PlaylistFileDownloadStateService.cs" />
     <Compile Include="Music\Playlisting\PlaylistFileSelectedEventArgs.cs" />
+    <Compile Include="Music\Playlisting\PlaylistSaverService.cs" />
     <Compile Include="Music\Playlisting\PlaylistService.cs" />
     <Compile Include="Music\PlayOrderService.cs" />
     <Compile Include="Networking\Caching\CachingService.cs" />

@@ -7,6 +7,6 @@ namespace RemoteMusicPlayerClient.Music.Playlisting
     {
         void AddSources(ObservableCollection<string> sourceDirectories, IEnumerable<string> newSourceDirectories);
         void Rescan(PlaylistViewModel playlistViewModel);
-        void LoadMetadata(IEnumerable<PlaylistFileViewModel> files);
+        void LoadMetadata(PlaylistViewModel playlistViewModel);
     }
 }

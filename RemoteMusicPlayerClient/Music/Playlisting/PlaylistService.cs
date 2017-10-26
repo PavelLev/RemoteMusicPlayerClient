@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web;
 using RemoteMusicPlayerClient.DryIoc;
 using RemoteMusicPlayerClient.Networking.Files;
@@ -14,12 +16,14 @@ namespace RemoteMusicPlayerClient.Music.Playlisting
         private readonly IFileService _fileService;
         private readonly IResolver _resolver;
         private readonly IMetadataService _metadataService;
+        private readonly IPlaylistSaverService _playlistSaverService;
 
-        public PlaylistService(IFileService fileService, IResolver resolver, IMetadataService metadataService)
+        public PlaylistService(IFileService fileService, IResolver resolver, IMetadataService metadataService, IPlaylistSaverService playlistSaverService)
         {
             _fileService = fileService;
             _resolver = resolver;
             _metadataService = metadataService;
+            _playlistSaverService = playlistSaverService;
         }
 
         public void AddSources(ObservableCollection<string> sourceDirectories, IEnumerable<string> newSourceDirectories)
@@ -62,13 +66,17 @@ namespace RemoteMusicPlayerClient.Music.Playlisting
                 });
             playlistViewModel.Directories = new ObservableCollection<PlaylistDirectoryViewModel>(directories);
 
-            LoadMetadata(playlistViewModel.AllFiles);
+            LoadMetadata(playlistViewModel);
         }
 
-        public async void LoadMetadata(IEnumerable<PlaylistFileViewModel> files)
+        public async void LoadMetadata(PlaylistViewModel playlistViewModel)
         {
-            foreach (var playlistFileViewModel in files)
+            foreach (var playlistFileViewModel in playlistViewModel.AllFiles)
             {
+                if (playlistFileViewModel.Metadata != null)
+                {
+                    continue;
+                }
                 try
                 {
                     playlistFileViewModel.Metadata = await _metadataService.GetAsync(playlistFileViewModel.Path);
@@ -81,6 +89,7 @@ namespace RemoteMusicPlayerClient.Music.Playlisting
                     }
                 }
             }
+            _playlistSaverService.SaveAll();
         }
     }
 }
