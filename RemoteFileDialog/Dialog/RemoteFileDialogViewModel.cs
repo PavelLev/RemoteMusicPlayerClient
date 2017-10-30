@@ -96,7 +96,6 @@ namespace RemoteMusicPlayerClient.CustomFrameworkElements.RemoteFileDialog
             window.Close();
         }
 
-
         public ICollection<IEntryViewModel> RootEntryViewModels
         {
             get => _rootEntryViewModels;

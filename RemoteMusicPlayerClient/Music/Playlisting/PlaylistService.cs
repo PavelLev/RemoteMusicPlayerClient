@@ -4,9 +4,11 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 using RemoteMusicPlayerClient.DryIoc;
+using RemoteMusicPlayerClient.Networking;
 using RemoteMusicPlayerClient.Networking.Files;
 
 namespace RemoteMusicPlayerClient.Music.Playlisting
@@ -17,13 +19,30 @@ namespace RemoteMusicPlayerClient.Music.Playlisting
         private readonly IResolver _resolver;
         private readonly IMetadataService _metadataService;
         private readonly IPlaylistSaverService _playlistSaverService;
+        private readonly IOnlineStatusService _onlineStatusService;
 
-        public PlaylistService(IFileService fileService, IResolver resolver, IMetadataService metadataService, IPlaylistSaverService playlistSaverService)
+        public PlaylistService(IFileService fileService, IResolver resolver, IMetadataService metadataService,
+            IPlaylistSaverService playlistSaverService, IOnlineStatusService onlineStatusService,
+            IPlaylistCollectionViewModel playlistCollectionViewModel)
         {
             _fileService = fileService;
             _resolver = resolver;
             _metadataService = metadataService;
             _playlistSaverService = playlistSaverService;
+            _onlineStatusService = onlineStatusService;
+
+            onlineStatusService.OnlineStatusChanged += newOnlineStatus =>
+            {
+                if (newOnlineStatus == OnlineStatus.Offline)
+                {
+                    return;
+                }
+
+                foreach (var playlistViewModel in playlistCollectionViewModel.All)
+                {
+                    LoadMetadata(playlistViewModel);
+                }
+            };
         }
 
         public void AddSources(ObservableCollection<string> sourceDirectories, IEnumerable<string> newSourceDirectories)
@@ -83,12 +102,19 @@ namespace RemoteMusicPlayerClient.Music.Playlisting
                 }
                 catch (HttpException httpException)
                 {
-                    if (httpException.GetHttpCode() != (int)HttpStatusCode.BadRequest)
+                    if (httpException.GetHttpCode() != (int) HttpStatusCode.BadRequest)
                     {
                         throw;
                     }
                 }
+                catch (HttpRequestException)
+                {
+                    _onlineStatusService.BecomeOffline();
+                    _playlistSaverService.SaveAll();
+                    return;
+                }
             }
+            _onlineStatusService.BecomeOnline();
             _playlistSaverService.SaveAll();
         }
     }
