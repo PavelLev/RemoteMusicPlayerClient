@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace RemoteMusicPlayerClient.Music.Playlisting
+namespace RemoteMusicPlayerClient.Music.Playlisting.Collection
 {
     public interface IPlaylistSaverService
     {

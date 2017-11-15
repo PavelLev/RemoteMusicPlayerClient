@@ -8,6 +8,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 using RemoteMusicPlayerClient.DryIoc;
+using RemoteMusicPlayerClient.Music.Playlisting.Collection;
 using RemoteMusicPlayerClient.Networking;
 using RemoteMusicPlayerClient.Networking.Files;
 

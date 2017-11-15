@@ -2,9 +2,8 @@
 using System.IO;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using RemoteMusicPlayerClient.Networking;
 
-namespace RemoteMusicPlayerClient.Music.Playlisting
+namespace RemoteMusicPlayerClient.Music.Playlisting.Collection
 {
     public class PlaylistSaverService : IPlaylistSaverService
     {

@@ -1,0 +1,10 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:RemoteMusicPlayerClient.Music.Playlisting.Collection"
+                    xmlns:playlisting="clr-namespace:RemoteMusicPlayerClient.Music.Playlisting">
+    <DataTemplate 
+        DataType="{x:Type playlisting:PlaylistViewModel}"
+    >
+        <Border CornerRadius="2"></Border>    
+    </DataTemplate>
+</ResourceDictionary>

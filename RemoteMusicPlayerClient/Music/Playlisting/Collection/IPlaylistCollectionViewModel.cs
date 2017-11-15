@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 
-namespace RemoteMusicPlayerClient.Music.Playlisting
+namespace RemoteMusicPlayerClient.Music.Playlisting.Collection
 {
     public interface IPlaylistCollectionViewModel
     {

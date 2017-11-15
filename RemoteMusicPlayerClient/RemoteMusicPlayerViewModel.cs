@@ -8,6 +8,7 @@ using Prism.Mvvm;
 using RemoteMusicPlayerClient.CustomFrameworkElements.RemoteFileDialog;
 using RemoteMusicPlayerClient.Music;
 using RemoteMusicPlayerClient.Music.Playlisting;
+using RemoteMusicPlayerClient.Music.Playlisting.Collection;
 using RemoteMusicPlayerClient.Networking;
 
 namespace RemoteMusicPlayerClient

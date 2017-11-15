@@ -18,7 +18,7 @@ namespace RemoteMusicPlayerClient.Music
         {
             return await GetAsync<Metadata>(_getMetadata, new Dictionary<string, string>
             {
-                {"filePath", filePath},
+                {nameof(filePath), filePath},
             });
         }
     }

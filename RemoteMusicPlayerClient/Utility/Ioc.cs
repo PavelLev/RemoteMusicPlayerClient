@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using RemoteMusicPlayerClient.DryIoc;
 using RemoteMusicPlayerClient.Music;
 using RemoteMusicPlayerClient.Music.Playlisting;
+using RemoteMusicPlayerClient.Music.Playlisting.Collection;
 using RemoteMusicPlayerClient.Networking;
 using RemoteMusicPlayerClient.Networking.Files;
 
@@ -40,7 +41,7 @@ namespace RemoteMusicPlayerClient.Utility
             Container.Register<IApplicationNameService, ApplicationNameService>(Reuse.Singleton);
             Container.Register<IFileNameExtractor, FileNameExtractor>(Reuse.Singleton);
             Container.Register<IFileTypeHelper, FileTypeHelper>(Reuse.Singleton);
-            Container.Register<HttpClient>();
+            Container.Register<HttpClient>(Reuse.Singleton);
             Container.Register<JsonSerializer>();
             Container.Register<SHA256>();
             Container.Register<IToastService, ToastService>(Reuse.Singleton);

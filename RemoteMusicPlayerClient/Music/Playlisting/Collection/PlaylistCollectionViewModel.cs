@@ -5,7 +5,7 @@ using System.Linq;
 using Prism.Mvvm;
 using RemoteMusicPlayerClient.DryIoc;
 
-namespace RemoteMusicPlayerClient.Music.Playlisting
+namespace RemoteMusicPlayerClient.Music.Playlisting.Collection
 {
     public class PlaylistCollectionViewModel : BindableBase, IPlaylistCollectionViewModel
     {
